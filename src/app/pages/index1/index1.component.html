@@ -1,0 +1,177 @@
+<!--Navbar Start-->
+<nav class="navbar navbar-expand-lg fixed-top navbar-custom sticky sticky-dark" (window:scroll)="windowScroll()"
+  id="navbar">
+  <div class="container">
+    <!-- LOGO -->
+    <a class="logo text-uppercase" href="/">
+      <img src="assets/images/logo-dark.png" alt="" class="logo-dark" height="20" />
+    </a>
+
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse"
+      aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" (click)="toggleMenu()">
+      <i class="mdi mdi-menu"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarCollapse">
+      <ul class="navbar-nav ml-auto navbar-center" id="mySidenav">
+        <li class="nav-item" [ngClass]="{'active':currentSection === 'home'}">
+          <a [ngxScrollTo]="'#home'" href="javascript: void(0);" class="nav-link">Home</a>
+        </li>
+        <li class="nav-item" [ngClass]="{'active':currentSection === 'hourly'}">
+          <a [ngxScrollTo]="'#hourly'" href="javascript: void(0);" class="nav-link">Hourly</a>
+        </li>
+        <li class="nav-item" [ngClass]="{'active':currentSection === 'forecast'}">
+          <a [ngxScrollTo]="'#forecast'" href="javascript: void(0);" class="nav-link">Forecast</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<!-- Navbar End -->
+<div appScrollspy [spiedTags]="['SECTION']" (sectionChange)="onSectionChange($event)">
+  <!-- Hero section Start -->
+  <section class="hero-section" id="home">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-lg-6" >
+          <div class="hero-wrapper mb-4">
+            <p class="font-16 text-uppercase"><p> {{currentDate}} <br>{{viewCity}}, {{viewCountry}}<br></p>
+            <h3 class="hero-title mb-4">
+              <img src={{viewIcon}}/>
+              <span class="text-primary">{{viewMain}} &nbsp;|&nbsp; {{WeatherData.temp_celcius}}°C</span>
+              <br>
+            </h3>
+            
+            <p>{{viewMainDesc | titlecase}}<br>Min : {{WeatherData.temp_min}}°C &nbsp;|&nbsp;  Max : {{WeatherData.temp_max}}°C <br>Wind : {{WeatherData.wind.speed}} m/s E  &nbsp;|&nbsp;  Humidity : {{WeatherData.main.humidity}}%<br></p>
+            <p> </p>
+          </div>
+       
+        </div>
+
+        <div class="col-lg-6 col-sm-12">
+          <div class="home-img mt-5 mt-lg-0">
+            <img src="assets/images/home-img.png" alt="" class="img-fluid mx-auto d-block">
+          </div>
+        </div>
+      </div>
+
+      <!-- end row -->
+    </div>
+    <!-- end container -->
+  </section>
+
+  <section class="section bg-light" id="hourly">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-lg-8">
+          <div class="text-center mb-5">
+            <h5 class="text-primary text-uppercase small-title">Hourly</h5>
+            <p>{{currentDate2| date:'dd/MM/yyyy'}}  <br>{{viewCity}}, {{viewCountry}}</p>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-4" *ngFor="let data of hourly.slice(0,3)">
+          <div class="pricing-plan card text-center">
+            <div class="card-body p-4">
+              <h5 class="mt-2 mb-5">{{data.dt_txt | date: 'HH:mm'}}</h5>
+            <h3 class="hero-title mb-4">
+              <img src="http://openweathermap.org/img/w/{{data.weather[0].icon}}.png"/>
+              <span class="text-primary">{{data.weather[0].main}} &nbsp;|&nbsp; {{data.main.temp - 273.15 | number: '1.0-0'}}°C</span>
+              <br>
+            </h3>
+            <div class="plan-features mt-5">
+              <p>Desc : <span class="text-success">{{data.weather[0].description | titlecase}}</span></p>
+              <p>Max Temp : <span class="text-success">{{data.main.temp_max- 273.15 | number: '1.0-0'}}°C</span></p>
+              <p>Min Temp : <span class="text-success">{{data.main.temp_min - 273.15 | number: '1.0-0'}}°C</span></p>
+              <p>Humidity : <span class="text-success">{{data.main.humidity}}%</span></p>
+              <p>Wind : <span class="text-success">{{data.wind.speed}} FF m/s E</span></p>
+            </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-lg-8">
+          <div class="text-center mb-5">
+            <h4 class="mb-3">Find Another City</h4>
+            <p>Remember the places that matter to you</p>
+          </div>
+        </div>
+
+        <div class="col-xl-8 col-lg-10">
+          <div class="text-center">
+              <form [formGroup]="userForm" >
+                <div class="row">
+                  <div class="col-md-9">
+                    <div>
+                      <input type="text" class="form-control" placeholder="Enter City" id="city" formControlName="city" >
+                    </div>
+                  </div>
+                  <div class="col-md-3">
+                    <div class="mt-3 mt-md-0">
+                      <button type="submit" class="btn btn-primary btn-block" (click)="submit()">Find</button>
+                    </div>
+                  </div>
+                </div>
+              </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section bg-light" id="forecast">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-lg-8">
+          <div class="text-center mb-5">
+            <h5 class="text-primary text-uppercase small-title">Forecast</h5>
+            <h4 class="mb-3">5 day / 3 hour forecast</h4>
+            <p>{{viewCity}}, {{viewCountry}}</p>
+          </div>
+        </div>
+      </div>  
+      <div class="row">
+        <div class="col-lg-12" >
+          <div class="card">
+            <div class="card-body">
+              <table class="table table-borderless" style="width: 100%;">
+                <thead>
+                  <tr>
+                    <th scope="col">Date</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Status Desc.</th>
+                    <th scope="col">Temp</th>
+                    <th scope="col">Temp Max</th>
+                    <th scope="col">Temp Min</th>
+                    <th scope="col">Humidity</th>
+                    <th scope="col">Wind (FF m/s E)</th>
+                  </tr>
+                </thead>
+                <tbody *ngFor="let data of hourly">
+                  <tr>
+                    <td>{{data.dt_txt | date: 'dd/MM/yyyy HH:mm'}}</td>
+                    <td class="text-primary"><img src="http://openweathermap.org/img/w/{{data.weather[0].icon}}.png" width="30px" 
+                      height="30px"/> {{data.weather[0].main}}</td>
+                    <td>{{data.weather[0].description | titlecase}}</td>
+                    <td>{{data.main.temp - 273.15 | number: '1.0-0'}}°C</td>
+                    <td>{{data.main.temp_max- 273.15 | number: '1.0-0'}}°C</td>
+                    <td>{{data.main.temp_min- 273.15 | number: '1.0-0'}}°C</td>
+                    <td>{{data.main.humidity}}%</td>
+                    <td>{{data.wind.speed}}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <app-footer></app-footer>
+</div>
